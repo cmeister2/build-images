@@ -12,3 +12,11 @@ build_image_versioned base_gcc8 base_image install_gcc8.sh
 
 # Build clang-7. Depends on `base_image` from stage1
 build_image_versioned base_clang7 base_image install_clang7.sh
+
+
+# On Travis, push the images.
+if [[ -n "${TRAVIS:-}" ]]
+then
+  push_image_versioned base_gcc8
+  push_image_versioned base_clang7
+fi
