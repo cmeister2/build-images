@@ -7,7 +7,6 @@ set -exuo pipefail
 # - llvm-toolchain-xenial-7
 
 # Use wget to download the key as we're building curl...
-apt-get install -y --no-install-recommends wget
 wget http://apt.llvm.org/llvm-snapshot.gpg.key
 apt-key add llvm-snapshot.gpg.key
 add-apt-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"

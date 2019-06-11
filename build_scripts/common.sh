@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Calculate the current build locations
+export SCRIPTDIR=$(dirname "${BASH_SOURCE[0]}")
+export ROOTDIR=${SCRIPTDIR}/..
+
 # If running on travis and processing a tag, work with curlbuildimages.
 # If running on travis and processing anything else, work with
 # curlbuildimagestemp.
@@ -72,7 +76,7 @@ push_image_versioned()
 # Function to remove an image tag from the Docker hub
 remove_image_versioned()
 {
-  python3 docker_hub_scripts/remove_tag.py \
+  python3 ${ROOTDIR}/docker_hub_scripts/remove_tag.py \
       --username ${DOCKER_USER} \
       --password ${DOCKER_PASS} \
       --repository ${1} \

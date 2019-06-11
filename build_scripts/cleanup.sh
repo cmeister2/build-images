@@ -2,7 +2,8 @@
 
 set -euxo pipefail
 
-. common.sh
+# Import the common functionality.
+. $(dirname "${BASH_SOURCE[0]}")/common.sh
 
 if [[ -n "${TRAVIS:-}" ]]
 then

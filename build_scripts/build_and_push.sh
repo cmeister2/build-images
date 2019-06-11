@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# General script to build and push a Docker image.
-
 set -euxo pipefail
 
-. common.sh
+# Import the common functionality.
+. $(dirname "${BASH_SOURCE[0]}")/common.sh
 
 # The first argument is the tag. This should match a repository in Docker and
 # is the "name" of the image.

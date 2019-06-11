@@ -4,14 +4,22 @@ services:
 jobs:
   include:
   - stage: base_image
-    script: ./stage1.sh
+    script: ./build_scripts/stage1.sh
+
   - stage: gcc_clang
-    script: ./build_and_push.sh base_gcc8 base_image install_gcc8.sh
-  - script: ./build_and_push.sh base_clang7 base_image install_clang7.sh
+    script: ./build_scripts/build_and_push.sh base_gcc8 base_image install_gcc8.sh
+  - script: ./build_scripts/build_and_push.sh base_clang7 base_image install_clang7.sh
+
   - stage: build_images
-    script: ./build_and_push.sh gssapi_libssh2 base_gcc8 create_gssapi_libssh2.sh
+    script: ./build_scripts/build_and_push.sh gssapi_libssh2 base_gcc8 create_gssapi_libssh2.sh
+
+  - stage: test_images
+    script:
+      - ./build_scripts/download_stable_curl.sh
+      - CHECKSRC=1 ./build_scripts/run_normal.sh gssapi_libssh2 /tmp/curl --with-gssapi --with-libssh2
+
   - stage: remove_images
-    script: ./cleanup.sh
+    script: ./build_scripts/cleanup.sh
     if: tag IS blank
 
 env:

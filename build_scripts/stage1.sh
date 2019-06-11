@@ -2,7 +2,8 @@
 
 set -euxo pipefail
 
-. common.sh
+# Import the common functionality.
+. $(dirname "${BASH_SOURCE[0]}")/common.sh
 
 # Build stage 1. Stage 1 consists of the root base image with some common tools installed.
 echo "Building stage 1 (version ${VERSION})"
