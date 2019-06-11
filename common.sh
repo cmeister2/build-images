@@ -67,3 +67,14 @@ push_image_versioned()
   TAG=$1
   docker push ${DOCKER_REPO}/${TAG}:${VERSION}
 }
+
+
+# Function to remove an image tag from the Docker hub
+remove_image_versioned()
+{
+  python3 docker_hub_scripts/remove_tag.py \
+      --username ${DOCKER_USER} \
+      --password ${DOCKER_PASS} \
+      --repository ${1} \
+      --tag ${VERSION}
+}
