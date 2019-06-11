@@ -5,4 +5,4 @@ set -exuo pipefail
 
 # Install the tool needed for `add-apt-repository`.
 apt-get -y update
-apt-get -y install software-properties-common
+apt-get -y install --no-install-recommends software-properties-common

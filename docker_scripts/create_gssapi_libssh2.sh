@@ -4,4 +4,4 @@
 set -exuo pipefail
 
 # Install --with-gssapi and --with-libssh2 development packages.
-apt-get -y install krb5-user libssh2-1-dev
+apt-get -y install --no-install-recommends krb5-user libssh2-1-dev

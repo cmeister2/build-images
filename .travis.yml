@@ -3,11 +3,15 @@ services:
 - docker
 jobs:
   include:
-  - stage: Build
+  - stage: base_image
     script:
     - ./stage1.sh
-    - ./stage2.sh
-    - ./stage3.sh
+  - stage: gcc_clang
+    script: ./build_and_push.sh base_gcc8 base_image install_gcc8.sh
+  - script: ./build_and_push.sh base_clang7 base_image install_clang7.sh
+  - stage: build_images
+    script: ./build_and_push.sh gssapi_libssh2 base_gcc8 create_gssapi_libssh2.sh
+
 env:
   global:
   - secure: hZHhrJmUroDWlcXMs6oH9ckWpbKOd3/9z6EEceBmRy/X1J21N5vMCnnjeQT1uDRbN3IO/Ir56eCNQ8tGXYptH50/yxywQ4QtUk+vR/VrqUuI+m69lKG0WjDP+SzOCHaf17lbrXtyBPRsVZe+W34uNt0bMMcRpF3IG0WiNQFnrugwXtaYDyZPEJb8sb4s95lhHzsjfAaJQpUNncL7Tk4neg3ItZ0oLvjdBptMJqDOPrXtEFwBr8OMQ0WxkP7hdeDdj1xvTvvb1xmlI69tRO9w5xkAhLPD9YA7mcizCjnEPuLGFowiyafLF3MfQapII2opYaFyhoj1Z6gCUNNhi9ueDMOkSjq4TDgJ0SIGIHFJLf+9VMhubPFCMySGFjtI/unziSQjAnYOczM+crFPU3a4VxHti9289jTmiu9YmFxivb09PGo3OrWemHERySy3wtcKxbpruljk1F0gsFKrRFH4ovLLq4Oz0zfNyWnSZIdVVUc5TQKtJNlBQkLA1IAaSC6okIV+gTrdWHhPb9Fuxj4gb+qX0hNdLTwc7RDhPUF2ua/CnOi3JXOrE7Y9AZvN/9d6zlq+cfh4yYbOEEcpJELHSGhulaGgz1PQ3iSMbBh5L1c0CgNydbcoHRzVzdhZYNbm3C9t46pcb/EFjKH0eEDxjD/3CB9egLdXjnRoiMmr1/o=
