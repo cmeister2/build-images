@@ -20,7 +20,7 @@ DOCKER_SCRIPT=${3}
 # Use the common script functionality to build the image.
 build_image_versioned ${TAG} ${BASE_IMAGE} ${DOCKER_SCRIPT}
 
-# On Travis, push the newly generated image.
+# On Travis, push the newly generated image if possible.
 if [[ -n "${TRAVIS:-}" ]]
 then
   push_image_versioned ${TAG}

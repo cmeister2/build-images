@@ -10,8 +10,13 @@ export ROOTDIR=${SCRIPTDIR}/..
 # If running locally, work with the curlbuildimagestemp namespace.
 if [[ -n "${TRAVIS:-}" ]]
 then
-  # Log into Docker.
-  echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+
+  # Check to see if we can log into Docker. Pull requests cannot log into Docker
+  if [[ -n "${DOCKER_USER:-}" ]]
+  then
+    # Log into Docker.
+    echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+  fi
 
   if [[ -n "${TRAVIS_TAG:-}" ]]
   then
@@ -68,8 +73,15 @@ build_image_versioned()
 # then pushes to Docker.
 push_image_versioned()
 {
-  TAG=$1
-  docker push ${DOCKER_REPO}/${TAG}:${VERSION}
+  if [[ -n "${DOCKER_USER:-}" ]]
+  then
+    # The Docker user environment variable exists, so pushing should work.
+    TAG=$1
+    docker push ${DOCKER_REPO}/${TAG}:${VERSION}
+  else
+    echo "Would have pushed to ${DOCKER_REPO}/${TAG}:${VERSION} but "
+    echo "DOCKER_USER is not set."
+  fi
 }
 
 

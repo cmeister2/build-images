@@ -16,3 +16,6 @@ fi
 pushd /opt/curl
 ./buildconf
 popd
+
+# Set MAKEFLAGS to the number of processors.
+export MAKEFLAGS+=-j$(nproc)

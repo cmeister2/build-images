@@ -3,24 +3,47 @@ services:
 - docker
 jobs:
   include:
-  - stage: base_image
+  # Pull requests don't have access to encrypted variables, so they cannot
+  # benefit from the multistage support.
+
+  # Stage 1: Build the base image
+  - stage: stage1_base_image
     script: ./build_scripts/stage1.sh
+    if: type != pull_request
 
-  - stage: gcc_clang
-    script: ./build_scripts/build_and_push.sh base_gcc8 base_image install_gcc8.sh
-  - script: ./build_scripts/build_and_push.sh base_clang7 base_image install_clang7.sh
+  # Stage 2: GCC and Clang
+  - stage: stage2_gcc_clang
+    script: ./build_scripts/stage2.sh gcc8
+    if: type != pull_request
+  - script: ./build_scripts/stage2.sh clang7
+    if: type != pull_request
 
-  - stage: build_images
-    script: ./build_scripts/build_and_push.sh gssapi_libssh2 base_gcc8 create_gssapi_libssh2.sh
+  # Stage 3: Build remaining images
+  - stage: stage3_build_images
+    script: ./build_scripts/stage3.sh gssapi_libssh2
+    if: type != pull_request
 
-  - stage: test_images
-    script:
-      - ./build_scripts/download_stable_curl.sh
-      - CHECKSRC=1 ./build_scripts/run_normal.sh gssapi_libssh2 /tmp/curl --with-gssapi --with-libssh2
+  # Stage 4: Test building curl
+  - stage: stage4_test_images
+    script: ./build_scripts/stage4.sh gssapi_libssh2
+    if: type != pull_request
 
+  # Cleanup: remove any temporary images
   - stage: remove_images
     script: ./build_scripts/cleanup.sh
-    if: tag IS blank
+    if: tag IS blank AND type != pull_request
+
+  # -----
+
+  # For pull requests we still want to do testing, but we have to do it in
+  # serial mode.
+  - stage: all_stages_pull_request
+    script:
+      - ./build_scripts/stage1.sh
+      - ./build_scripts/stage2.sh
+      - ./build_scripts/stage3.sh
+      - ./build_scripts/stage4.sh
+    if: type = pull_request
 
 env:
   global:
